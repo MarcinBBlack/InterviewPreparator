@@ -1,0 +1,98 @@
+KONCEPCJA APLIKACJI — INTERVIEW PREPARATOR
+
+KONCEPCJA
+
+Cel:
+Aplikacja pomaga ćwiczyć wykrywanie błędów w kodzie przed rozmowami kwalifikacyjnymi. Użytkownik odpowiada tekstowo w formie czatu, a AI ocenia odpowiedź.
+
+Użytkownicy i konta:
+- Każdy użytkownik rejestruje się loginem i hasłem albo loguje na istniejące konto.
+- Każdy widzi wyłącznie swój osobisty postęp. Nie ma publicznego rankingu.
+
+Język interfejsu:
+- MVP jest po polsku.
+- Architektura powinna umożliwiać dodanie kolejnych języków interfejsu w przyszłości.
+
+Ustawienia sesji:
+- Na początku każdej sesji użytkownik wybiera język programowania, poziom zaawansowania (początkujący, średnio zaawansowany albo zaawansowany) i limit czasu.
+- Poziom i język nie są stałymi preferencjami profilu; dotyczą wybranej sesji.
+- Rola zawodowa została pominięta w MVP.
+- Limit czasu obowiązuje dla każdego zadania w sesji: 1, 5 albo 10 minut.
+
+Obsługiwane języki w MVP:
+- C#
+- Java
+- C++
+- Python
+- JavaScript
+- T-SQL
+- PL-SQL
+
+Zadania:
+- Wszystkie zadania polegają na znajdowaniu błędów w kodzie.
+- Temat jest losowany osobno dla każdego zadania z puli popularnych tematów.
+- Zadanie zawiera co najmniej 1 i najwyżej 4 błędy.
+- Każde zadanie ma ukryty klucz odpowiedzi z listą błędów, ich wyjaśnieniami i propozycjami poprawek. Użytkownik nie widzi klucza.
+
+Przebieg sesji:
+- Sesja zawiera maksymalnie 5 zadań w MVP. Użytkownik może zakończyć ją wcześniej. W wersji docelowej będzie można konfigurować liczbę zadań.
+- Sesja ma stan Otwarta albo Zamknięta. Zadanie ma stan Otwarte albo Zamknięte.
+- Gdy użytkownik chce zakończyć sesję wcześniej, aplikacja ostrzega o konsekwencjach i prosi o potwierdzenie.
+- Zakończonej sesji nie można wznowić.
+- Jeśli użytkownik chce rozpocząć nową sesję, gdy obecna jest otwarta, aplikacja pyta, czy zamknąć obecną i rozpocząć nową, czy anulować i pozostać w obecnej.
+- Przy wcześniejszym zakończeniu bieżące zadanie zostaje zamknięte z wynikiem 0 punktów. Punkty za wcześniej ukończone zadania są zachowane.
+- Po upływie czasu odpowiedź z czatu jest automatycznie traktowana jako ostateczna, oceniana i blokowana. Użytkownik nie może już zmieniać zamkniętego zadania.
+- Przed wysłaniem odpowiedzi jako ostatecznej aplikacja pyta o potwierdzenie. Jeśli użytkownik nie potwierdzi, może dalej edytować odpowiedź.
+- Po zamknięciu zadania aplikacja pyta, czy przejść do następnego zadania.
+
+Punktacja i informacja zwrotna:
+- Za każdy poprawnie rozpoznany błąd można zdobyć maksymalnie 3 punkty:
+  - 1 punkt za wskazanie błędu,
+  - 1 dodatkowy punkt za jego wyjaśnienie,
+  - 1 dodatkowy punkt za propozycję poprawki.
+- Punkty za wyjaśnienie i poprawkę są oceniane osobno, jeśli odpowiedź odnosi się do właściwego błędu.
+- Ten sam błąd można punktować tylko raz.
+- Dokładne wskazanie linii kodu nie jest wymagane, jeśli użytkownik jasno opisze problem.
+- Maksymalny wynik za zadanie to 12 punktów. Maksymalna możliwa punktacja zadania zależy od liczby błędów.
+- Zadanie bez odpowiedzi otrzymuje 0 punktów.
+- Podsumowanie sesji rozdziela błędy poprawnie wykryte przez użytkownika i błędy pominięte.
+- Szczegółowa ocena AI jest dostępna w podsumowaniu sesji, ale nie jest zapisywana w bazie danych.
+
+Historia i postęp:
+- Historia zapisuje punkty zdobyte i możliwe za poszczególne zadania oraz ustawienia sesji: język i poziom zaawansowania.
+- Wynik sesji jest sumą punktów z jej zadań; postęp pokazuje wynik każdego zadania i sumę użytkownika.
+- W historii nie ma publicznego rankingu.
+- Wykresy są poza zakresem MVP.
+
+GLOSARIUSZ DOMENOWY
+
+- Użytkownik: właściciel konta, sesji i osobistych wyników.
+- Sesja: zbiór zadań jednego użytkownika. Przechowuje wybrany język, poziom i limit czasu; zawiera maksymalnie pięć zadań w MVP.
+- Zadanie: fragment kodu przypisany do jednej sesji. Ma stan, wynik zdobyty i maksymalny możliwy wynik.
+- Błąd: problem w kodzie, który użytkownik ma rozpoznać i opisać.
+- Klucz odpowiedzi: ukryte oczekiwane błędy, wyjaśnienia i poprawki używane przez AI do oceny.
+- Temat: dziedzina zadania, losowana osobno dla każdego zadania.
+- Ocena: punkty za wykrycie, wyjaśnienie i poprawkę oraz szczegółowa informacja zwrotna dostępna po sesji.
+- Historia i postęp: zapis punktów oraz ustawień sesji należący do danego użytkownika.
+
+REKOMENDACJA TECHNICZNA
+
+- Typ aplikacji: webowa aplikacja Blazor.
+- Architektura: rozwiązanie .NET z warstwami Domain, Application, Infrastructure i Web.
+- Język: C#.
+- Framework: ASP.NET Core i Blazor Web App.
+- Baza danych: SQLite z Entity Framework Core.
+- AI: OpenAI jako dostawca, z osobną integracją w warstwie Infrastructure; konkretny model pozostaje do wyboru.
+- Uzasadnienie: Blazor pasuje do preferencji C# i pozwala utrzymać większość aplikacji w ekosystemie .NET. SQLite jest lekkim wyborem na MVP. .NET 10 jest wydaniem LTS.
+- Alternatywa: React lub Vue jako frontend i ASP.NET Core Web API jako backend. Daje niezależny frontend, ale wymaga dodatkowego stosu technologicznego.
+
+KWESTIE DO DALSZEGO USTALENIA
+
+- Dokładna pula popularnych tematów oraz to, czy temat może powtórzyć się w jednej sesji.
+- Konkretny model OpenAI.
+- Sposób dostosowania trudności zadania do wybranego poziomu.
+- Czy i jak użytkownik będzie mógł przeglądać wcześniejsze podsumowania szczegółowej oceny AI; obecnie ustalono, że szczegółowa ocena nie jest zapisywana w bazie.
+
+PROPONOWANY NASTĘPNY KROK
+
+Przygotować szczegółowy model domeny: encje, ich relacje, przejścia stanów oraz reguły punktacji.

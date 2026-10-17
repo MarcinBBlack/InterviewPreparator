@@ -1,0 +1,52 @@
+STRUKTURA TECHNICZNA PROJEKTU INTERVIEWPREPARATOR
+
+1. Solucja i ustawienia wspólne
+
+Plik InterviewPreparator.sln grupuje cztery projekty w katalogu src. Wspólne ustawienia znajdują się w Directory.Build.props:
+- docelowa platforma: .NET 10 (net10.0),
+- włączone nullable reference types,
+- włączone implicit usings.
+
+Zależności między projektami:
+
+InterviewPreparator.Web
+  -> InterviewPreparator.Application
+  -> InterviewPreparator.Infrastructure
+       -> InterviewPreparator.Application
+       -> InterviewPreparator.Domain
+InterviewPreparator.Application -> InterviewPreparator.Domain
+
+2. InterviewPreparator.Domain
+
+Warstwa domenowa przechowuje podstawowe pojęcia i reguły biznesowe aplikacji. Nie zawiera zależności od pozostałych projektów solucji.
+
+Entities/Entity.cs definiuje abstrakcyjną klasę bazową encji. Udostępnia identyfikator Int32 Id oznaczony jako generowany przez bazę danych.
+
+Pozostałe encje:
+- User: konto użytkownika, login i hash hasła.
+- Session: sesja użytkownika, wybrany język programowania, poziom zaawansowania, limit czasu i zadania.
+- SessionTask: zadanie sesji oraz uzyskane i możliwe do zdobycia punkty.
+- SessionHistory: historia sesji jednego użytkownika i zagregowane punkty.
+- UserProgress: podsumowanie punktów użytkownika oraz wyniki poszczególnych zadań.
+
+Katalog Enums zawiera typy wyliczeniowe dla języków programowania, poziomu zaawansowania, limitu czasu oraz stanów sesji i zadań.
+
+3. InterviewPreparator.Application
+
+Warstwa przypadków użycia aplikacji. Zależy od Domain. Docelowo powinna koordynować operacje takie jak zakładanie konta, rozpoczynanie i kończenie sesji, ocena odpowiedzi oraz odczyt postępu. Obecnie projekt nie zawiera jeszcze implementacji tych przypadków użycia.
+
+4. InterviewPreparator.Infrastructure
+
+Warstwa integracji z zewnętrznymi technologiami. Zależy od Application i Domain. Zawiera ApplicationDbContext w katalogu DatabaseContext, który dziedziczy po DbContext i udostępnia DbSety dla User, Session, SessionTask, SessionHistory i UserProgress.
+
+Projekt ma pakiet Microsoft.EntityFrameworkCore.Sqlite w wersji 10.0.13. Konfiguracja połączenia z bazą, migracje i repozytoria nie są jeszcze widoczne w aktualnym szkielecie.
+
+5. InterviewPreparator.Web
+
+Projekt uruchomieniowy aplikacji i warstwa prezentacji. Korzysta z Application i Infrastructure. Jest oparty o Blazor Razor Components w trybie Interactive Server. Program.cs rejestruje komponenty Razor i mapuje komponent App. W projekcie znajdują się komponenty stron i układu, plik CSS oraz appsettings.json.
+
+W aktualnym szkielecie nie ma osobnych kontrolerów ani endpointów API. Nie ma też jeszcze ekranów obsługi kont, sesji zadań ani integracji z agentem OpenAI.
+
+6. Kierunek przepływu odpowiedzialności
+
+Interfejs Web powinien wywoływać przypadki użycia z Application. Application realizuje logikę procesu, korzystając z modelu Domain i abstrakcji dostępu do danych lub usług. Infrastructure dostarcza implementacje techniczne, w tym dostęp do SQLite przez Entity Framework Core. Web konfiguruje aplikację i łączy zależności podczas uruchamiania.

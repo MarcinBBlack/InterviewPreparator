@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>InterviewPreparator.Application</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InterviewPreparator.Domain\InterviewPreparator.Domain.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <RootNamespace>InterviewPreparator.Web</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\InterviewPreparator.Application\InterviewPreparator.Application.csproj" />
+    <ProjectReference Include="..\InterviewPreparator.Infrastructure\InterviewPreparator.Infrastructure.csproj" />
+  </ItemGroup>
+</Project>
