@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
     <RootNamespace>InterviewPreparator.Web</RootNamespace>
+    <UserSecretsId>InterviewPreparator-Web-5294df7e-96e2-4f07-8d70-0a773dc1e6ad</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\InterviewPreparator.Application\InterviewPreparator.Application.csproj" />

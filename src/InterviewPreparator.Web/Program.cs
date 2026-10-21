@@ -1,6 +1,10 @@
 using InterviewPreparator.Web.Components;
+using InterviewPreparator.Application.Interfaces;
+using InterviewPreparator.Infrastructure.AgentFactory;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<IAgentFactory, OpenAIAgentFactory>();
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
