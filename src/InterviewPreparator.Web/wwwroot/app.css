@@ -66,3 +66,49 @@ h1 {
     border-top: 1px solid #e5e9f2;
     font-size: 0.9rem;
 }
+
+.primary-button {
+    margin-top: 1rem;
+    padding: 0.85rem 1.2rem;
+    color: #fff;
+    background: #273c75;
+    border: 0;
+    border-radius: 0.65rem;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.primary-button:hover:not(:disabled) {
+    background: #1c2d5b;
+}
+
+.primary-button:disabled {
+    cursor: wait;
+    opacity: 0.7;
+}
+
+.agent-status {
+    margin-top: 1.5rem;
+    padding: 1rem 1.1rem;
+    border: 1px solid;
+    border-radius: 0.75rem;
+}
+
+.agent-status p {
+    margin: 0.5rem 0 0;
+    line-height: 1.55;
+    white-space: pre-wrap;
+}
+
+.agent-status-success {
+    color: #185c3b;
+    background: #effaf3;
+    border-color: #b9e5c9;
+}
+
+.agent-status-error {
+    color: #8b2929;
+    background: #fff3f1;
+    border-color: #f0c2bc;
+}

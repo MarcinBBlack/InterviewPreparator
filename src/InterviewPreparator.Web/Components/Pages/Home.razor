@@ -1,10 +1,58 @@
 @page "/"
+@rendermode InteractiveServer
+@using InterviewPreparator.Application.Interfaces
+@using Microsoft.Agents.AI
+@inject IAgentFactory AgentFactory
 
 <PageTitle>Interview Preparator</PageTitle>
 
 <section class="welcome-card">
     <p class="eyebrow">Technical interview practice</p>
     <h1>Prepare for your next interview</h1>
-    <p>Practice finding bugs in code, explain your reasoning, and track your personal progress.</p>
-    <p class="setup-note">Your practice session setup and tasks will be added here.</p>
+    <p>Start a short test conversation to verify that the agent factory and OpenAI configuration are working.</p>
+
+    <button class="primary-button" @onclick="StartAgentSessionAsync" disabled="@_isStarting">
+        @(_isStarting ? "Connecting…" : "Start agent session")
+    </button>
+
+    @if (!String.IsNullOrWhiteSpace(_status))
+    {
+        <div class="agent-status @(_hasError ? "agent-status-error" : "agent-status-success")" role="status">
+            <strong>@(_hasError ? "Could not start the agent" : "Agent response")</strong>
+            <p>@_status</p>
+        </div>
+    }
 </section>
+
+@code {
+    private Boolean _isStarting;
+    private Boolean _hasError;
+    private String? _status;
+
+    private async Task StartAgentSessionAsync()
+    {
+        _isStarting = true;
+        _status = null;
+        _hasError = false;
+
+        try
+        {
+            AIAgent agent = AgentFactory.Create(
+                "gpt-4o-mini",
+                "InterviewPreparatorTestAgent",
+                "You are a concise assistant helping users prepare for technical interviews.");
+
+            var response = await agent.RunAsync("Reply with a short greeting in Polish and confirm that the test session is active.");
+            _status = response.Text;
+        }
+        catch (Exception exception)
+        {
+            _hasError = true;
+            _status = exception.Message;
+        }
+        finally
+        {
+            _isStarting = false;
+        }
+    }
+}
