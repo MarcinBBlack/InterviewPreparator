@@ -1,9 +1,11 @@
-namespace InterviewPreparator.Domain.Entities;
+using InterviewPreparator.Domain.Entities;
+
+namespace InterviewPreparator.Application.ReadModels;
 
 /// <summary>
-/// Represents a user's accumulated progress across their sessions.
+/// Represents a user's calculated progress across their sessions.
 /// </summary>
-public class UserProgress : Entity
+public sealed class UserProgress
 {
     #region Fields
 
@@ -19,12 +21,12 @@ public class UserProgress : Entity
     public Int32 UserId { get; }
 
     /// <summary>
-    /// Gets the points earned by the user across all sessions.
+    /// Gets the points earned by the user across their tasks.
     /// </summary>
     public Int32 TotalEarnedPoints { get; }
 
     /// <summary>
-    /// Gets the total points available across all recorded tasks.
+    /// Gets the total points available across the user's tasks.
     /// </summary>
     public Int32 TotalPossiblePoints { get; }
 
@@ -38,15 +40,33 @@ public class UserProgress : Entity
     #region Constructors
 
     /// <summary>
-    /// Creates a progress snapshot from the user's session history.
+    /// Creates a progress summary from the specified user's sessions.
     /// </summary>
-    /// <param name="sessionHistory">The user's session history.</param>
-    public UserProgress(SessionHistory sessionHistory)
+    /// <param name="userId">The ID of the user.</param>
+    /// <param name="sessions">The sessions used to calculate progress.</param>
+    public UserProgress(Int32 userId, IEnumerable<Session> sessions)
     {
-        ArgumentNullException.ThrowIfNull(sessionHistory);
+        if (userId <= 0)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(userId),
+                "User ID must be greater than zero.");
+        }
 
-        UserId = sessionHistory.UserId;
-        var taskProgress = sessionHistory.Sessions
+        ArgumentNullException.ThrowIfNull(sessions);
+
+        var userSessions = sessions.ToArray();
+
+        if (userSessions.Any(session => session.UserId != userId))
+        {
+            throw new ArgumentException(
+                "All sessions must belong to the specified user.",
+                nameof(sessions));
+        }
+
+        UserId = userId;
+
+        var taskProgress = userSessions
             .SelectMany(session => session.Tasks.Select(task => new SessionTaskProgress(
                 session.Id,
                 task.Id,
@@ -63,10 +83,10 @@ public class UserProgress : Entity
 }
 
 /// <summary>
-/// Represents a task's contribution to a user's progress.
+/// Represents a task's contribution to a user's progress summary.
 /// </summary>
 /// <param name="SessionId">The ID of the session containing the task.</param>
-/// <param name="TaskId">The task ID.</param>
+/// <param name="TaskId">The ID of the task.</param>
 /// <param name="EarnedPoints">The points earned for the task.</param>
 /// <param name="PossiblePoints">The points available for the task.</param>
 public sealed record SessionTaskProgress(

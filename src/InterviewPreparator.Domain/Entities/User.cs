@@ -7,12 +7,12 @@ public class User : Entity
     /// <summary>
     /// Gets the user's login.
     /// </summary>
-    public string Login { get; private set; }
+    public String Login { get; private set; }
 
     /// <summary>
     /// Gets the user's hashed password.
     /// </summary>
-    public string PasswordHash { get; private set; }
+    public String PasswordHash { get; private set; }
 
     #endregion
 
