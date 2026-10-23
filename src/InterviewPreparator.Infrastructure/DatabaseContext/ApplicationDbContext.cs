@@ -1,36 +1,45 @@
-﻿using InterviewPreparator.Domain.Entities;
+using InterviewPreparator.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace InterviewPreparator.Infrastructure.DatabaseContext
+namespace InterviewPreparator.Infrastructure.DatabaseContext;
+
+public class ApplicationDbContext : DbContext
 {
-    public class ApplicationDbContext : DbContext
+    #region Properties
+
+    public DbSet<Session> Sessions => Set<Session>();
+
+    public DbSet<SessionTask> SessionTasks => Set<SessionTask>();
+
+    public DbSet<User> Users => Set<User>();
+
+    #endregion
+
+    #region Constructors
+
+    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        : base(options)
     {
-        #region Properties
-        public DbSet<Session> Sessions { get; set; }
-        public DbSet<SessionHistory> SessionHistories {  get; set; }
-        public DbSet<SessionTask> SessionTasks { get; set; }
-        public DbSet<User> Users { get; set; }
-        public DbSet<UserProgress> UsersProgresses { get; set; }
-
-        #endregion
-        #region Constructors
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
-        {
-        }
-
-        protected ApplicationDbContext()
-        {
-        }
-        #endregion
-
-        #region Overrides
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-        }
-        #endregion
     }
+
+    #endregion
+
+    #region Overrides
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Session>()
+            .HasOne<User>()
+            .WithMany()
+            .HasForeignKey(session => session.UserId);
+
+        modelBuilder.Entity<Session>()
+            .HasMany(session => session.Tasks)
+            .WithOne()
+            .HasForeignKey(sessionTask => sessionTask.SessionId);
+    }
+
+    #endregion
 }
